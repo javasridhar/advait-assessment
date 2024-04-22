@@ -1,4 +1,4 @@
-package com.sridhar.prashant.advait.assessment.util
+package com.sridhar.prashant.advait.assessment.util.downloader
 
 import java.util.concurrent.Callable
 

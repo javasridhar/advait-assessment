@@ -31,7 +31,7 @@ import com.sridhar.prashant.advait.assessment.R
 import com.sridhar.prashant.advait.assessment.domain.model.ImageItem
 import com.sridhar.prashant.advait.assessment.ui.base.AppComposable
 import com.sridhar.prashant.advait.assessment.util.Constants
-import com.sridhar.prashant.advait.assessment.util.ImageDownloader
+import com.sridhar.prashant.advait.assessment.util.downloader.ImageDownloader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Future
@@ -62,24 +62,27 @@ fun GridScreenContent(
                     .fillMaxWidth(),
                 ) {
                     Column {
-                        var bm by remember { mutableStateOf<Bitmap?>(null) }
-                        var img by remember { mutableStateOf<ImageBitmap?>(null) }
+                        var bitmap by remember { mutableStateOf<Bitmap?>(null) }
+                        var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
                         var imageBitmapFuture: Future<Bitmap?>?
+                        val url = image.thumbnail.getImageUrl()
+
                         LaunchedEffect(
-                            key1 = image.thumbnail.getImageUrl(),
+                            key1 = url,
                             block = {
                                 withContext(Dispatchers.IO) {
                                     imageBitmapFuture = ImageDownloader
                                         .with()
-                                        .load(image.thumbnail.getImageUrl())
-                                    bm = imageBitmapFuture?.get()
+                                        .load(url)
+                                    bitmap = imageBitmapFuture?.get()
+//                                    MemoryCache.with().addIntoCache(Utils.getFormattedCacheKey(url), bitmap!!)
                                 }
                                 withContext(Dispatchers.Main) {
-                                    img = bm!!.asImageBitmap()
+                                    imageBitmap = bitmap!!.asImageBitmap()
                                 }
                             })
 
-                        if (img == null) {
+                        if (imageBitmap == null) {
                             Image(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -95,7 +98,7 @@ fun GridScreenContent(
                                     .fillMaxWidth()
                                     .aspectRatio(1f / 1f)
                                     .clipToBounds(),
-                                bitmap = img!!,
+                                bitmap = imageBitmap!!,
                                 contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 alignment = Alignment.Center
