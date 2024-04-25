@@ -1,29 +1,34 @@
 package com.sridhar.prashant.advait.assessment.util.cache
 
 import android.graphics.Bitmap
-import android.util.Log
 import androidx.collection.LruCache
 import javax.inject.Singleton
+
+private lateinit var cache: LruCache<String, Bitmap>
 
 @Singleton
 class MemoryCache private constructor() {
 
-    private val maxCacheSize: Int = (Runtime.getRuntime().maxMemory() / 1024).toInt() / 8
-    private val cache: LruCache<String, Bitmap>
-
     init {
-        cache = object : LruCache<String, Bitmap>(maxCacheSize) {
+        // Get max available VM memory, exceeding this amount will throw an
+        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+        // int in its constructor.
+        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+
+        // Use 1/8th of the available memory for this memory cache.
+        val cacheSize = maxMemory / 8
+
+        cache = object : LruCache<String, Bitmap>(cacheSize) {
+
             override fun sizeOf(key: String, value: Bitmap): Int {
-                return value.byteCount / 1024
+                return value.byteCount / 1024 / 1024
             }
         }
     }
 
     @Synchronized
     fun addIntoCache(key: String, bitmap: Bitmap): Bitmap? {
-        val result = cache.put(key, bitmap)
-        Log.d("MemoryCache", "$key ${cache.hitCount()} Result => ${result != null}")
-        return result
+        return cache.put(key, bitmap)
     }
 
     @Synchronized

@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -66,15 +67,19 @@ fun GridScreenContent(
                         var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
                         var imageBitmapFuture: Future<Bitmap?>?
                         val url = image.thumbnail.getImageUrl()
+                        val context = LocalContext.current
 
                         LaunchedEffect(
                             key1 = url,
                             block = {
                                 withContext(Dispatchers.IO) {
-                                    imageBitmapFuture = ImageDownloader
+                                    bitmap = ImageDownloader
                                         .with()
-                                        .load(url)
-                                    bitmap = imageBitmapFuture?.get()
+                                        .memoryCache(true)
+                                        .diskCache(true, context)
+                                        .loadBitmap(url)
+//                                        .load(url)
+//                                    bitmap = imageBitmapFuture?.get()
 //                                    MemoryCache.with().addIntoCache(Utils.getFormattedCacheKey(url), bitmap!!)
                                 }
                                 withContext(Dispatchers.Main) {
