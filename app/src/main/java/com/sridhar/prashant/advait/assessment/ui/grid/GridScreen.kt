@@ -2,15 +2,19 @@ package com.sridhar.prashant.advait.assessment.ui.grid
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +39,6 @@ import com.sridhar.prashant.advait.assessment.util.Constants
 import com.sridhar.prashant.advait.assessment.util.downloader.ImageDownloader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.concurrent.Future
 
 @Composable
 fun GridScreen(
@@ -62,55 +65,90 @@ fun GridScreenContent(
                     .padding(5.dp)
                     .fillMaxWidth(),
                 ) {
-                    Column {
+                    Box(
+                        contentAlignment = Alignment.Center
+                    ) {
                         var bitmap by remember { mutableStateOf<Bitmap?>(null) }
                         var imageBitmap by remember { mutableStateOf<ImageBitmap?>(null) }
-                        var imageBitmapFuture: Future<Bitmap?>?
                         val url = image.thumbnail.getImageUrl()
                         val context = LocalContext.current
+                        var exception by remember { mutableStateOf<Exception?>(null) }
 
-                        LaunchedEffect(
-                            key1 = url,
-                            block = {
-                                withContext(Dispatchers.IO) {
+                        LaunchedEffect(key1 = url, block = {
+                            withContext(Dispatchers.IO) {
+                                try {
                                     bitmap = ImageDownloader
                                         .with()
                                         .memoryCache(true)
                                         .diskCache(true, context)
                                         .loadBitmap(url)
-//                                        .load(url)
-//                                    bitmap = imageBitmapFuture?.get()
-//                                    MemoryCache.with().addIntoCache(Utils.getFormattedCacheKey(url), bitmap!!)
+                                } catch (e: Exception) {
+                                    exception = e
                                 }
-                                withContext(Dispatchers.Main) {
-                                    imageBitmap = bitmap!!.asImageBitmap()
-                                }
-                            })
+                            }
+                            withContext(Dispatchers.Main) {
+                                imageBitmap = bitmap?.asImageBitmap()
+                            }
+                        })
 
+                        val imageId: Int
                         if (imageBitmap == null) {
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f / 1f)
-                                    .clipToBounds(),
-                                painter = painterResource(id = R.drawable.placeholder),
-                                contentDescription = null,
-                                contentScale = ContentScale.FillBounds,
-                                alignment = Alignment.Center,)
+                            if (exception != null) {
+                                CircleIndicator()
+                                imageId = R.drawable.image_load_error
+                                DisplayErrorOrPlaceHolderImage(id = imageId)
+                            } else {
+                                imageId = R.drawable.image_placeholder
+                                DisplayErrorOrPlaceHolderImage(id = imageId)
+                                CircleIndicator(true)
+                            }
                         } else {
-                            Image(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(1f / 1f)
-                                    .clipToBounds(),
-                                bitmap = imageBitmap!!,
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop,
-                                alignment = Alignment.Center
-                            )
+                            CircleIndicator()
+                            DisplayImage(imageBitmap!!)
                         }
                     }
             }
         }
     }
+}
+
+@Composable
+fun CircleIndicator(isVisible: Boolean? = null) {
+    isVisible?.let {
+        Column(
+            modifier = Modifier.wrapContentSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator()
+        }
+    }
+}
+
+@Composable
+fun DisplayErrorOrPlaceHolderImage(id: Int) {
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f / 1f)
+            .clipToBounds(),
+        painter = painterResource(id = id),
+        contentDescription = null,
+        contentScale = ContentScale.FillBounds,
+        alignment = Alignment.Center,
+    )
+}
+
+@Composable
+fun DisplayImage(imageBitmap: ImageBitmap) {
+    Image(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f / 1f)
+            .clipToBounds(),
+        bitmap = imageBitmap,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        alignment = Alignment.Center
+    )
 }

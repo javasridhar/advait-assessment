@@ -9,4 +9,6 @@ object Constants {
     const val DISK_CACHE_SUBDIR = "assessment-cache-dir"
     const val DISK_CACHE_SIZE: Long = 100 * 1024 * 1024 // 100 MB
     const val BUFFER_CACHE_SIZE = 10 * 1024 * 1024 // 10 MB
+    const val SLASH_SEPARATOR = "/"
+    const val ZERO_SEPARATOR = "0"
 }

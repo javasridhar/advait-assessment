@@ -1,5 +1,7 @@
 package com.sridhar.prashant.advait.assessment.domain.model
 
+import com.sridhar.prashant.advait.assessment.util.Constants
+
 data class Thumbnail(
     val id: String,
     val domain: String,
@@ -8,9 +10,11 @@ data class Thumbnail(
 ) {
     fun getImageUrl() = StringBuffer().apply {
         append(domain)
-        append("/")
+        append(Constants.SLASH_SEPARATOR)
         append(basePath)
-        append("/0/")
+        append(Constants.SLASH_SEPARATOR)
+        append(Constants.ZERO_SEPARATOR)
+        append(Constants.SLASH_SEPARATOR)
         append(key)
     }.toString()
 
