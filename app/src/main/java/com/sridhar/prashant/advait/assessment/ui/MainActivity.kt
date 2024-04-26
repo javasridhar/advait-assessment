@@ -12,6 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.sridhar.prashant.advait.assessment.domain.model.ImageItem
+import com.sridhar.prashant.advait.assessment.domain.model.Thumbnail
 import com.sridhar.prashant.advait.assessment.ui.grid.GridScreen
 import com.sridhar.prashant.advait.assessment.ui.grid.GridScreenContent
 import com.sridhar.prashant.advait.assessment.ui.theme.AssessmentTheme
@@ -50,7 +52,32 @@ class MainActivity : ComponentActivity() {
 fun ImagesPreview() {
     AssessmentTheme {
         GridScreenContent(
-            images = emptyList()
+            images = listOf(
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+                ImageItem("1", Thumbnail("1.1", "https://cimg.acharyaprashant.org", "images/img-f92c4193-2483-4ab7-aefd-854f022d81a8", "image.jpg")),
+            )
         )
     }
 }

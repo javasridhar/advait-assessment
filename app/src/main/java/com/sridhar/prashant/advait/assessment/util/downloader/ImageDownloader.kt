@@ -3,7 +3,6 @@ package com.sridhar.prashant.advait.assessment.util.downloader
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.util.Log
 import com.sridhar.prashant.advait.assessment.util.Constants
 import com.sridhar.prashant.advait.assessment.util.Utils
 import com.sridhar.prashant.advait.assessment.util.cache.DiskLruImageCache
@@ -14,7 +13,6 @@ import java.util.concurrent.Executors
 import javax.inject.Singleton
 
 private lateinit var memoryCache: MemoryCache
-//private lateinit var diskCache: DiskCache
 private lateinit var diskCache: DiskLruImageCache
 
 @Singleton
@@ -22,13 +20,6 @@ class ImageDownloader private constructor() {
     private var isDiskCacheEnabled = false
     private var isMemoryCacheEnabled = false
     private val executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors())
-
-//    fun load(url: String) : Future<Bitmap?> {
-//        val futureBitmap: Future<Bitmap?>
-//        val downloadTask = Downloader(url)
-//        futureBitmap = executorService.submit(downloadTask)
-//        return futureBitmap
-//    }
 
     fun loadBitmap(url: String) : Bitmap? {
         val key = Utils.getFormattedCacheKey(url)
@@ -40,16 +31,15 @@ class ImageDownloader private constructor() {
         return memoryCacheValue
             ?: if (diskCacheValue != null) {
                 // store in memoryCache too
-                Log.d("ImageDisk", "not null disk")
                 memoryCache?.addIntoCache(key, diskCacheValue)
                 diskCacheValue
             } else {
-                Log.d("ImageDisk", "null disk")
                 val bitmap = executorService.submit(downloadTask).get()
-                // store in diskCache and memoryCache
-                memoryCache?.addIntoCache(key, bitmap!!)
-                diskCache?.put(key, bitmap!!)
-
+                // store in diskCache and memoryCache if caching is true
+                bitmap?.let {
+                    memoryCache?.addIntoCache(key, bitmap)
+                    diskCache?.put(key, bitmap)
+                }
                 bitmap
             }
     }
@@ -82,17 +72,10 @@ class ImageDownloader private constructor() {
 
         override fun download(url: String): Bitmap? {
 
-            var bitmap: Bitmap? = null
-
-            try {
-                val urlObj = URL(url)
-                val conn: HttpURLConnection = urlObj.openConnection() as HttpURLConnection
-                bitmap = BitmapFactory.decodeStream(conn.inputStream)
-                conn.disconnect()
-            } catch (e: Exception) {
-                Log.d("URLException", url)
-                e.printStackTrace()
-            }
+            val urlObj = URL(url)
+            val conn: HttpURLConnection = urlObj.openConnection() as HttpURLConnection
+            val bitmap: Bitmap? = BitmapFactory.decodeStream(conn.inputStream)
+            conn.disconnect()
             return bitmap
         }
 
